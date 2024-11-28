@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    use HasFactory;
+    protected $table = 'messages';
 
-    protected $fillable = ['user_id', 'message', 'relation_to_admin', 'attachment', 'admin_reply', 'reply_attachment', 'is_replied'];
+    protected $primaryKey = 'id_messages';
 
-    public function guest()
+
+    protected $fillable = ['id_messages','id_user', 'email_guest', 'isi_pesan', 'lampiran', 'asal_kenalan', 'created_at', 'updated_at'];
+    public $timestamps = false;
+    public function user()
     {
-        return $this->belongsTo(Guest::class);
+        return $this->belongsTo(User::class); // Assuming 'user_id' is the foreign key
     }
+
 }

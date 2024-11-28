@@ -1,93 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You - BirthCard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Thank You Page</title>
     <style>
         body {
-            background: linear-gradient(to bottom, #ffc1c1, #ffe8e8);
-            height: 100vh;
             margin: 0;
-            display: flex;
-            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #ffecec;
         }
 
-        .navbar {
-            background-color: #f26b6b;
-        }
-
-        .navbar-brand,
-        .navbar-nav .nav-link {
+        /* Header */
+        .header {
+            background-color: #e87a82;
             color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .navbar-nav .nav-link:hover {
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .header .right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header a:hover {
             text-decoration: underline;
         }
 
-        .thank-you-container {
-            flex: 1;
+        /* Content */
+        .content {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            height: calc(100vh - 50px);
             text-align: center;
         }
 
-        .thank-you-container h1 {
-            font-size: 4rem;
-            color: white;
-            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
+        .content h1 {
+            font-size: 3em;
+            color: #ff6f91;
+            margin: 20px 0;
+            font-family: 'Comic Sans MS', cursive;
         }
 
-        .thank-you-container p {
-            font-size: 1.25rem;
-            color: white;
+        .content p {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 30px;
         }
 
-        .btn-primary {
-            background-color: #f26b6b;
+        .content .button-container {
+            margin-top: 30px;
+        }
+
+        .content .button-container a {
+            background: linear-gradient(135deg, #ff8b94, #ff6f91);
             border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1em;
+            font-weight: bold;
             border-radius: 20px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .btn-primary:hover {
-            background-color: #e65555;
+        .content .button-container a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="#">BirthCard</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Help</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Log Out</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- Header -->
+    <div class="header">
+        <a class="navbar-brand" href="#" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
+        <div class="right">
+            <a href="{{route('guest.dashboard')}}">Home</a>
+            <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
 
-    <div class="thank-you-container">
-        <h1>Thank You!</h1>
-        <p>Your message has been sent.</p>
-        <button class="btn btn-primary mt-4"><a href="{{ route('guest.viewMessage') }}">See Message</a></button>
+            <form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Content -->
+    <div class="content">
+        <h1>Thank you!</h1>
+        <p>Your message has been sent.</p>
+        <div class="button-container">
+        <a href="{{ route('guest.viewMessage')}}">
+            See Message
+        </a><br>
+        </div>
+    </div>
 </body>
-
 </html>

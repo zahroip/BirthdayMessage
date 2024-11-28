@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BirthLand Greetings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     /* General Styles */
     body {
@@ -116,7 +116,7 @@
     <div class="header">
       <a class="navbar-brand" href="#" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
         <div class="right">
-            <a href="{{route('guest.dashboard')}}">Home</a>
+            <a href="{{route('admin.dashboard')}}">Home</a>
             <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
 
             <form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
@@ -126,34 +126,14 @@
     </div>
 
     <main>
-      <h1>See the messages</h1>
+      <h1></h1>
 
       <!-- Edit Form -->
-      <form action="{{ route('guest.update', $message->id_messages) }}" method="POST" enctype="multipart/form-data">
+      <form action="" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         <div class="form-content">
-          <!-- Editable Name Field -->
-          <p><strong>Name:</strong> <a href="">{{$message->name}}</a></p>
-
-          <!-- Editable "Where did you know Rista" Field -->
-          <p><strong>Where did you know Rista:</strong>
-            <input type="text" name="asal_kenalan" value="{{ old('asal_kenalan', $message->asal_kenalan) }}">
-          </p>
-
-          <p><strong>Message:</strong></p>
-          <textarea name="isi_pesan">{{ old('isi_pesan', $message->isi_pesan) }}</textarea>
-
-
-          @if(!empty($message->jawaban))
-          <p><strong>Jawaban:</strong></p>
-          <textarea name="jawaban">{{ old('jawaban', $message->jawaban) }}</textarea>
-          @endif
-          <p><strong>File:</strong></p>
-
-          {{-- menampilkan jika ada lampiran --}}
-          <!-- Display existing file -->
           @if($message->lampiran)
             @php
                 $filePath = storage_path('app/public/' . $message->lampiran); // Adjust path based on where the file is stored
@@ -182,22 +162,11 @@
             <p>No file uploaded.</p>
           @endif
 
-          <!-- File input for new file -->
-          <input type="file" name="lampiran"  accept="image/*, video/*, audio/*">
-
-          <div class="buttons">
-           @if(empty($message->jawaban))
-                <button type="submit" class="edit">SAVE CHANGES</button>
-            @endif
 
 
-        </div>
+
       </form>
-      <form action="{{ route('guest.delete', $message->id_messages) }}" method="POST" style="display: inline;">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete this message?')">DELETE</button>
-      </form>
+
      </div>
     </main>
   </div>

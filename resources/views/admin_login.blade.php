@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - BirthCard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #ffe8e8;
@@ -43,15 +44,14 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">BirthCard</a>
+            <a class="navbar-brand" href="#" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Help</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('home')}}">Home</a></li>
+                    
                 </ul>
             </div>
         </div>
@@ -59,8 +59,24 @@
 
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="login-container text-center">
-            <img src="https://via.placeholder.com/100" alt="Cute Bear" class="cute-bear">
-             <form action="{{ route('admin.handleLogin') }}" method="POST">
+            <img src="{{ asset('gambar/logo1.jpeg') }}" alt="Cute Bear" class="cute-bear">
+            @if ($errors->any())
+                <div class="alert alert-danger text-start" role="alert">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger text-start" role="alert">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+             <form action="{{ route('login') }}" method="POST">
         @csrf
                 <div class="mb-3 text-start">
                     <label for="email" class="form-label">Email</label>
@@ -68,7 +84,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-envelope"></i>
                         </span>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="ZahroIndah@gmail.com">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Admin@gmail.com">
                     </div>
                 </div>
                 <div class="mb-3 text-start">

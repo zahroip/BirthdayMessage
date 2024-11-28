@@ -1,22 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pesan Guest</title>
+    <title>Birthday Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header */
+        .header {
+            background-color: #e87a82;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .header .right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        .content {
+            text-align: center;
+            padding: 50px;
+            background-color: #fcdada;
+        }
+
+        .content h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        .content .sub-text {
+            margin: 10px 0 30px;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .content .cat {
+            max-width: 200px;
+            margin-top: 20px;
+        }
+
+        /* Button */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px; /* Adjust height as needed */
+            background-color: #fff5f5;
+        }
+
+        .button {
+            background-color: #f28c8c;
+            color: white;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: #e87070;
+        }
+    </style>
 </head>
 <body>
-    <h1>Daftar Pesan</h1>
-    <ul>
-        @foreach ($messages as $message)
-            <li>
-                <a href="{{ route('admin.messageDetail', $message->id) }}">
-                    {{ $message->user->name }} ({{ $message->relation_to_admin }})
-                </a>
-            </li>
-        @endforeach
-    </ul>
+    <!-- Header -->
+    <div class="header">
+        <a class="navbar-brand" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
+        <div class="right">
+            <a href="{{ route('admin.dashboard') }}">Home</a>
+            <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
+
+            <form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Happy Birthday</h1>
+        <p class="sub-text">SEE SOME WISHES FOR YOU</p>
+        <img src="{{ asset('gambar/logo1.jpeg') }}" alt="Birthday Cat" class="cat">
+    </div>
+
+    <!-- Button -->
+    <div class="button-container">
+        <a href="{{ route('admin.pesan_masuk') }}" class="button">CLICK ME</a>
+    </div>
 </body>
 </html>
-

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Who Are You? - BirthCard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #ffe8e8;
@@ -53,24 +54,23 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">BirthCard</a>
+            <a class="navbar-brand" href="#" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Help</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('home')}}">Home</a></li>
+                    
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="container content-container">
-        <img src="https://via.placeholder.com/150" alt="Cute Gift Icon" class="cute-image">
+        <img src="{{ asset('gambar/logo1.jpeg') }}" alt="Cute Gift Icon" class="cute-image">
         <div class="card-container">
-            <h2>WHO ARE YOU?</h2>
+            <h2 style="font-family:  'Pacifico', cursive">WHO ARE YOU?</h2>
             <div class="d-grid gap-2">
 		<form action="{{ route('chooseLogin') }}" method="POST">
         	@csrf

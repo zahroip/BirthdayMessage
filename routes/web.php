@@ -5,6 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\AdminController;
 
+
+
+
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -17,30 +21,39 @@ Route::get('/greetings', function () {
     return view('greetings');
 })->name('greetings');
 
-// Guest routes
-Route::prefix('guest')->middleware('auth')->group(function () {
+Route::middleware('auth')->prefix('guest')->group(function () {
     Route::get('/dashboard', [GuestController::class, 'dashboard'])->name('guest.dashboard');
     Route::get('/message-form', [GuestController::class, 'showMessageForm'])->name('guest.messageForm');
     Route::post('/send-message', [GuestController::class, 'sendMessage'])->name('guest.sendMessage');
+    Route::get('/kirim_pesan', [GuestController::class, 'kirim_pesan'])->name('guest.kirim_pesan');
     Route::get('/thank-you', [GuestController::class, 'thankYou'])->name('guest.thankYou');
-    Route::get('/view-message', [GuestController::class, 'viewMessage'])->name('guest.viewMessage');
+    Route::get('/messages', [GuestController::class, 'viewMessage'])->name('guest.viewMessage');
+    Route::get('/daftarpesan', [GuestController::class, 'daftarpesan'])->name('admin.daftarpesan');
+    Route::put('/update/{id}', [GuestController::class, 'update'])->name('guest.update');
     Route::get('/edit-message', [GuestController::class, 'editMessage'])->name('guest.editMessage');
     Route::patch('/update-message', [GuestController::class, 'updateMessage'])->name('guest.updateMessage');
-    Route::delete('/delete-message/{message}', [GuestController::class, 'deleteMessage'])->name('guest.deleteMessage');
+    Route::delete('/destroy/{id_messages}', [GuestController::class, 'destroy'])->name('guest.delete');
+
 });
 
 // Admin routes
-Route::prefix('admin')->middleware('auth:admin')->group(function () {
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/message/{message}', [AdminController::class, 'showMessage'])->name('admin.showMessage');
-    Route::post('/reply/{message}', [AdminController::class, 'replyMessage'])->name('admin.replyMessage');
+    Route::get('/pesan_masuk', [AdminController::class, 'pesan_masuk'])->name('admin.pesan_masuk');
+    // web.php (routes)
+Route::post('/jawab', [AdminController::class, 'jawab'])->name('admin.jawab');
+Route::get('/lihat-file/{id}', [AdminController::class, 'lihatfile'])->name('admin.lihatfile');
+
 });
 
-// Authentication routes
-Route::post('/login-user', [AuthController::class, 'loginUser'])->name('auth.loginUser');
-Route::post('/login-admin', [AuthController::class, 'loginAdmin'])->name('auth.loginAdmin');
-Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
+// Authentication routes
+Route::post('/login-admin', [AuthController::class, 'login'])->name('login');
+Route::post('/login-user', [AuthController::class, 'loginUser'])->name('auth.loginUser');
+Route::get('/login-user', [AuthController::class, 'loginUser'])->name('auth.login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('guest.register');
+Route::post('/register', [AuthController::class, 'handleRegister'])->name('guest.handleRegister');
 // Route untuk memilih jenis login
 Route::get('/choose-login', function () {
     return view('choose_login');

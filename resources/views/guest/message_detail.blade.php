@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BirthCard Messages</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
         /* General styles */
         body {
@@ -212,22 +211,17 @@
 </head>
 <body>
     <div class="navbar">
-        <a class="navbar-brand" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
+        <a class="navbar-brand" href="#" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
         <div class="menu">
-            <a href="{{ route('admin.dashboard') }}">Home</a>
-            <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log Out</a>
-
-            <form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
+            <a href="#">Home</a>
+            
+            <a href="#" class="logout">Log Out</a>
         </div>
     </div>
 
     <div class="container">
         <h1>Messages For You:</h1>
-        <div id="successAlert" class="alert alert-success" style="display: none;">
-            Your reply has been sent successfully!
-        </div>
+
         <!-- Start of foreach loop for multiple messages -->
         @foreach($messages as $message)
         <div class="message-card">
@@ -235,17 +229,15 @@
             <div>
                 <input class="message-name" value="{{ $message->user_name }}" readonly> <!-- Name displayed above the message -->
                 <textarea class="message-content" readonly>{{ $message->isi_pesan }}</textarea>
-                <button class="btn-reply" onclick="openReplyModal({{ $message->id_messages }})">Reply</button>
-                <a href="{{ route('admin.lihatfile', ['id' => $message->id_user]) }}" class="btn-reply">
-                    Lihat File
-                </a> <!-- Message content below the name -->
+                <button class="btn-reply" onclick="openReplyModal({{ $message->id_messages }})">Reply</button> <!-- Message content below the name -->
             </div>
-
+            <div id="filePreview" style="margin-bottom: 20px;">
+                <!-- Dynamic content for file preview will go here -->
+            </div>
         </div>
         @endforeach
     </div>
 
-    {{-- untuk membalas pesan --}}
     <div id="replyModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeReplyModal()">&times;</span>
@@ -256,12 +248,41 @@
                 <textarea name="reply_message" placeholder="Type your reply here..." required></textarea>
                 <button type="submit" class="btn-reply">Send Reply</button>
             </form>
-
+            <div id="alertSuccess" class="alert" style="display:none;">Reply successfully sent!</div>
         </div>
     </div>
 
+    <script>
+        function openReplyModal(messageId, filePath, fileType) {
+            document.getElementById('message_id').value = messageId;
 
-    
+            const filePreview = document.getElementById('filePreview');
+            filePreview.innerHTML = ''; // Clear previous content
+
+            if (filePath) {
+                // Determine how to display the file based on its type
+                if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
+                    filePreview.innerHTML = `<img src="${filePath}" alt="Attachment" style="max-width: 100%; max-height: 300px;">`;
+                } else if (['mp4', 'webm', 'ogg'].includes(fileType)) {
+                    filePreview.innerHTML = `<video controls style="max-width: 100%; max-height: 300px;"><source src="${filePath}" type="video/${fileType}">Your browser does not support the video tag.</video>`;
+                } else if (['mp3', 'wav'].includes(fileType)) {
+                    filePreview.innerHTML = `<audio controls style="max-width: 100%;"><source src="${filePath}" type="audio/${fileType}">Your browser does not support the audio tag.</audio>`;
+                } else {
+                    filePreview.innerHTML = `<p><a href="${filePath}" target="_blank">Download File</a></p>`;
+                }
+            } else {
+                filePreview.innerHTML = `<p>No file attached.</p>`;
+            }
+
+            // Display the modal
+            document.getElementById('replyModal').style.display = 'block';
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyModal').style.display = 'none';
+        }
+    </script>
+
     <script>
         // Function to open the reply modal and set the message ID
         function openReplyModal(messageId) {

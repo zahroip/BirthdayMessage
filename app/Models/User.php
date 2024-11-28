@@ -9,10 +9,16 @@ class User extends Authenticatable
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email'];
+    protected $table = 'users';
 
-    public function message()
+    protected $primaryKey = 'id';
+
+    protected $fillable = ['id','name', 'email','password'];
+
+
+
+    public function messages()
     {
-        return $this->hasOne(Message::class);
+        return $this->hasMany(Message::class); // One user can have many messages
     }
 }

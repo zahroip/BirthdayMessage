@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class GuestController extends Controller
 {
@@ -13,15 +16,23 @@ class GuestController extends Controller
 
     public function dashboard()
     {
-        $message = Message::where('email', Auth::user()->email)->first();
-        if ($message) {
-            return redirect()->route('guest.viewMessage');
-        }
 
-        return view('guest.dashboard');
+        $id = Auth::user()->id;
+        $message = DB::table('messages')
+        ->join('users', 'messages.id_user', '=', 'users.id')
+        ->where('messages.id_user', $id)
+        ->select('messages.*', 'users.*')  // Menambahkan kolom dari tabel users
+        ->first();
+
+        return view('guest.dashboard', compact('message'));
     }
 
-    
+    public function kirim_pesan()
+    {
+
+
+        return view('guest.kirim_messages');
+    }
 
     public function showMessageForm()
     {
@@ -29,46 +40,139 @@ class GuestController extends Controller
     }
 
     public function sendMessage(Request $request)
-    {
-        $request->validate([
-            'message' => 'required|string',
-            'relation_to_admin' => 'required|string',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+{
+    // Validasi input
+    $request->validate([
+        'asal_kenalan' => 'required|string|max:255',
+        'isi_pesan'    => 'required|string',
+    ]);
+
+    try {
+        // Proses upload file jika ada
+        $fileName = null;
+        if ($request->hasFile('lampiran')) {
+            // Validasi apakah file berhasil diupload
+            $file = $request->file('lampiran');
+            // Ambil nama file asli dan simpan di folder 'uploads'
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            // Menyimpan file dengan nama unik ke dalam folder 'public/uploads'
+            $file->storeAs('uploads', $fileName, 'public');
+        }
+
+        // Mendapatkan email dari session
+        $email = Auth::user()->email;
+        $id = Auth::user()->id;
+
+        // Simpan data ke database menggunakan Eloquent
+        Message::create([
+            'asal_kenalan' => $request->asal_kenalan,
+            'id_user'  => $id,
+            'email_guest'  => $email,
+            'isi_pesan'    => $request->isi_pesan,
+            'lampiran'     => $fileName,
+            'created_at'   => now(),
         ]);
 
-        $message = new Message($request->only('message', 'relation_to_admin'));
-        
-
-        if ($request->hasFile('attachment')) {
-            $message->attachment = $request->file('attachment')->store('attachments');
-        }
-        $message->email = Auth::user()->email; 
-        $message->save();
-
+        // Redirect ke halaman terima kasih
         return redirect()->route('guest.thankYou');
+    } catch (\Exception $e) {
+        // Log error untuk debugging
+        \Log::error('Error sending message: ' . $e->getMessage());
+
+        // Jika terjadi error, kembali ke form dengan input dan pesan error
+        return redirect()->back()->withInput()->withErrors(['error' => 'Gagal menyimpan pesan. Silakan coba lagi.']);
     }
+}
+
+
+
 
     public function thankYou()
     {
-        return view('guest.thank_you');
+        $messages = Auth::user()->id;
+        return view('guest.thank_you', compact('messages'));
     }
 
+    public function destroy($id_messages)
+{
+    // Cari pesan berdasarkan ID
+    $message = Message::findOrFail($id_messages);
+
+    // Hapus file jika ada
+    if ($message->lampiran && Storage::exists('public/uploads/' . $message->lampiran)) {
+        Storage::delete('public/uploads/' . $message->lampiran);
+    }
+
+    // Hapus pesan dari database
+    $message->delete();
+
+    // Redirect dengan pesan sukses
+    return redirect()->route('guest.thankYou')->with('success', 'Message deleted successfully.');
+}
+
+    public function daftarpesan(){
+        $messages = DB::table('messages')
+        ->join('users', 'messages.id_user', '=', 'users.id') // Join the users table with messages
+        ->select('messages.*', 'users.name as user_name') // Select the required columns
+        ->get();
+
+        return view('guest.message_detail', compact('messages'));
+    }
     public function viewMessage()
     {
+        // Cari pesan berdasarkan ID
+        $id = Auth::user()->id;
+        $message = DB::table('messages')
+        ->join('users', 'messages.id_user', '=', 'users.id')
+        ->where('messages.id_user', $id)
+        ->select('messages.*', 'users.*')  // Menambahkan kolom dari tabel users
+        ->first();
 
-        $email = Auth::user()->email;
-
-        // Debugging sementara
-    $messages = Message::where('email', $email)->get();
-    dd($email, $messages); // Tampilkan email dan hasil query
-
-    $message = Message::where('email', $email)->first();
+        // Jika pesan tidak ditemukan, kembalikan pesan error
         if (!$message) {
-        return 'No message found for this user.';
+            return redirect()->route('guest.thankYou')->with('error', 'Message not found.');
+        }
+
+        // Kirim data pesan ke view
+        return view('guest.view_message', compact('message'));
     }
 
-    return view('guest.view_message', compact('message'));
+
+    public function update(Request $request, $id)
+    {
+        // Validate incoming data
+        $request->validate([
+            'asal_kenalan' => 'required|string|max:255',
+            'isi_pesan' => 'required|string|max:1000',
+            'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,webm,ogg,mp3,wav',
+        ]);
+
+        // Find the message by ID
+        $message = Message::findOrFail($id);
+
+        // Update message data
+        $message->asal_kenalan = $request->input('asal_kenalan');
+        $message->isi_pesan = $request->input('isi_pesan');
+
+        // Handle file upload (if any)
+        if ($request->hasFile('lampiran')) {
+            // Generate a unique filename based on current time or a random string
+            $filename = Str::random(40) . '.' . $request->lampiran->getClientOriginalExtension();
+
+            // Store the file in the 'public/uploads' directory
+            $request->lampiran->storeAs('uploads', $filename, 'public');
+
+            // Update the message record with the new filename (without full path)
+            $message->lampiran = $filename;
+        }
+
+        // Save the changes
+        $message->save();
+
+        // Redirect back to the thank you page with a success message
+        return redirect()->route('guest.thankYou')->with('success', 'Message updated successfully!');
     }
+
 
     public function editMessage(Request $request)
     {
@@ -83,11 +187,5 @@ class GuestController extends Controller
         return redirect()->route('guest.viewMessage');
     }
 
-    public function deleteMessage(Message $message)
-    {
-        if (!$message->is_replied) {
-            $message->delete();
-        }
-        return redirect()->route('guest.dashboard');
-    }
+
 }

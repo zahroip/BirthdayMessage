@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BirthCard - Greetings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #ffe8e8;
@@ -25,7 +26,7 @@
             padding: 40px;
         }
         .brand-logo {
-            font-family: 'Brush Script MT', cursive;
+            font-family: 'Pacifico', cursive;
             font-size: 2.5rem;
             color: #f26b6b;
             display: inline-block;
@@ -50,6 +51,13 @@
         .login-btn:hover {
             background-color: #d14f4f;
         }
+
+        .login-btn a {
+    color: white; /* Warna teks mengikuti warna tombol */
+    text-decoration: none; /* Menghapus garis bawah */
+    font-weight: bold; /* Opsional: membuat teks lebih tegas */
+    display: inline-block; /* Menyelaraskan dengan tombol */
+}
         .subtitle {
             font-family: 'Arial', sans-serif;
             color: #f26b6b;
@@ -60,26 +68,25 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">BirthCard</a>
+            <a class="navbar-brand" href="#" style="font-family: 'Pacifico', cursive">BirthdayCard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="help.blade.php">Help</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    
+                    
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="container content-container">
-        <div class="brand-logo">
-            <img src="https://via.placeholder.com/30" alt="Ribbon Icon">
-            BirthCard
+        <div class="brand-logo" style="">
+            BirthCard      
         </div>
-        <img src="https://via.placeholder.com/250" alt="Bear and Cake" class="main-image">
+
+        <img src="{{ asset('gambar/logo1.jpeg') }}" alt="Bear and Cake" class="main-image">
         <!-- Button Login -->
         <div>
             <button class="login-btn"><a href="{{ route('chooseLogin') }}" >Login</a></button>
